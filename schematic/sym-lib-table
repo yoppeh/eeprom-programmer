@@ -1,0 +1,7 @@
+(sym_lib_table
+  (lib (name Arduino)(type Legacy)(uri C:/Users/warren/Documents/kicad/lib/Arduino.lib)(options "")(descr ""))
+  (lib (name eeprom)(type Legacy)(uri C:/Users/warren/Documents/kicad/lib/eeprom.lib)(options "")(descr ""))
+  (lib (name Transistor)(type Legacy)(uri C:/Users/warren/Documents/kicad/lib/Transistor.lib)(options "")(descr ""))
+  (lib (name Voltage)(type Legacy)(uri C:/Users/warren/Documents/kicad/lib/Voltage.lib)(options "")(descr ""))
+  (lib (name at28c64b-15pu-programmer-rescue)(type Legacy)(uri ${KIPRJMOD}/at28c64b-15pu-programmer-rescue.lib)(options "")(descr ""))
+)
