@@ -20,42 +20,24 @@ Text GLabel 9150 4100 2    50   Input ~ 0
 eeNotChipEnable
 Text GLabel 9150 3400 2    50   Input ~ 0
 eeNotWriteEnable
-Wire Wire Line
-	2000 2600 1800 2600
-Text GLabel 1800 2600 0    50   Input ~ 0
+Text GLabel 2000 2600 0    50   Input ~ 0
 srSerialData
-Text GLabel 1800 2800 0    50   Input ~ 0
+Text GLabel 2000 2800 0    50   Input ~ 0
 srSerialClock
-Text GLabel 1800 4900 0    50   Input ~ 0
+Text GLabel 2000 4900 0    50   Input ~ 0
 srSerialClock
-Text GLabel 1800 2900 0    50   Input ~ 0
+Text GLabel 2000 2900 0    50   Input ~ 0
 srNotResetAll
-Wire Wire Line
-	2000 5000 1800 5000
-Text GLabel 1800 5000 0    50   Input ~ 0
+Text GLabel 2000 5000 0    50   Input ~ 0
 srNotResetAll
-Wire Wire Line
-	2000 3100 1800 3100
-Text GLabel 1800 3100 0    50   Input ~ 0
+Text GLabel 2000 3100 0    50   Input ~ 0
 srReadClock
-Wire Wire Line
-	2000 5200 1800 5200
-Text GLabel 1800 5200 0    50   Input ~ 0
+Text GLabel 2000 5200 0    50   Input ~ 0
 srReadClock
-Wire Wire Line
-	2000 3200 1800 3200
-Text GLabel 1800 3200 0    50   Input ~ 0
+Text GLabel 2000 3200 0    50   Input ~ 0
 srNotOutputEnable
-Wire Wire Line
-	2000 5300 1800 5300
-Text GLabel 1800 5300 0    50   Input ~ 0
+Text GLabel 2000 5300 0    50   Input ~ 0
 srNotOutputEnable
-Wire Wire Line
-	1800 2800 2000 2800
-Wire Wire Line
-	1800 4900 2000 4900
-Wire Wire Line
-	2000 2900 1800 2900
 Text GLabel 2400 2000 0    50   Input ~ 0
 Arduino5V
 Text GLabel 2400 4100 0    50   Input ~ 0
@@ -64,9 +46,9 @@ Text GLabel 9150 2900 0    50   Input ~ 0
 Arduino5V
 Text GLabel 5750 2550 1    50   Output ~ 0
 Arduino5V
-Text GLabel 6200 4350 2    50   Output ~ 0
+Text GLabel 6050 4350 2    50   Output ~ 0
 srSerialData
-Text GLabel 6200 4250 2    50   Output ~ 0
+Text GLabel 6050 4250 2    50   Output ~ 0
 srSerialClock
 Text Notes 7350 7500 0    50   ~ 0
 Atmel AT28C64B-15PU Programming Circuit
@@ -82,11 +64,11 @@ Wire Wire Line
 	1850 4000 2800 4000
 Wire Wire Line
 	2800 3500 2800 4000
-Text GLabel 6200 4150 2    50   Output ~ 0
+Text GLabel 6050 4150 2    50   Output ~ 0
 srNotOutputEnable
-Text GLabel 6200 4050 2    50   Output ~ 0
+Text GLabel 6050 4050 2    50   Output ~ 0
 srReadClock
-Text GLabel 6200 3950 2    50   Output ~ 0
+Text GLabel 6050 3950 2    50   Output ~ 0
 srNotResetAll
 Text GLabel 5050 4350 0    50   Output ~ 0
 eeNotWriteEnable
@@ -333,22 +315,12 @@ F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 5550 2950 50
 	1    0    0    -1  
 $EndComp
 NoConn ~ 6050 3750
-Wire Wire Line
-	6050 3950 6200 3950
-Wire Wire Line
-	6050 4050 6200 4050
-Wire Wire Line
-	6050 4150 6200 4150
-Wire Wire Line
-	6050 4250 6200 4250
-Wire Wire Line
-	6050 4350 6200 4350
 NoConn ~ 6050 4450
 $Comp
-L eeprom-programmer:AT28C64B-15PU IC?
+L eeprom-programmer:AT28C64B-15PU IC1
 U 1 1 5CB76AFF
 P 8050 3300
-F 0 "IC?" H 8600 3565 50  0000 C CNN
+F 0 "IC1" H 8600 3565 50  0000 C CNN
 F 1 "AT28C64B-15PU" H 8600 3474 50  0000 C CNN
 F 2 "DIP1556W56P254L3702H483Q28N" H 9000 3400 50  0001 L CNN
 F 3 "https://componentsearchengine.com/Datasheets/1/AT28C64B-15PU.pdf" H 9000 3300 50  0001 L CNN
