@@ -18,6 +18,11 @@ K TTL SR 3State
 F http://www.ti.com/lit/gpn/sn74ls595
 $ENDCMP
 #
+$CMP AT28C64B-15PU
+D AT28C64B-15PU, Parallel EEPROM Memory 64kbit, Parallel, 150ns 4.5  5.5 V, 28-Pin PDIP
+F https://componentsearchengine.com/Datasheets/1/AT28C64B-15PU.pdf
+$ENDCMP
+#
 $CMP Arduino_Nano_v2.x
 D Arduino Nano v2.x
 K Arduino nano microcontroller module USB
