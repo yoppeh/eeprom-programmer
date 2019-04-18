@@ -2,12 +2,12 @@ EESchema Schematic File Version 4
 LIBS:eeprom-programmer-cache
 EELAYER 29 0
 EELAYER END
-$Descr A4 11693 8268
+$Descr A 11000 8500
 encoding utf-8
 Sheet 1 1
-Title ""
-Date ""
-Rev ""
+Title "AT28C EEPROM Programmer"
+Date "2019-04-18"
+Rev "1.0.0"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -20,12 +20,6 @@ Text GLabel 5900 3950 0    50   Input ~ 0
 Arduino5V
 Text GLabel 3800 2300 1    50   Output ~ 0
 Arduino5V
-Text Notes 7350 7500 0    50   ~ 0
-Atmel AT28C64B-15PU Programming Circuit
-Text Notes 8134 7644 0    50   ~ 0
-2019-04-04
-Text Notes 10600 7650 0    50   ~ 0
-1.0.0
 Wire Wire Line
 	5500 4550 5350 4550
 Wire Wire Line
@@ -44,7 +38,7 @@ U 1 1 5CB78989
 P 5900 2750
 F 0 "U1" H 5900 3531 50  0000 C CNN
 F 1 "74HC595" H 5900 3440 50  0000 C CNN
-F 2 "" H 5900 2750 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 5900 2750 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 5900 2750 50  0001 C CNN
 	1    5900 2750
 	1    0    0    -1  
@@ -55,7 +49,7 @@ U 1 1 5CB788C3
 P 5900 4950
 F 0 "U2" H 5900 5731 50  0000 C CNN
 F 1 "74HC595" H 5900 5640 50  0000 C CNN
-F 2 "" H 5900 4950 50  0001 C CNN
+F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 5900 4950 50  0001 C CNN
 F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 5900 4950 50  0001 C CNN
 	1    5900 4950
 	1    0    0    -1  
@@ -132,7 +126,7 @@ U 1 1 5CBA60B6
 P 6050 1900
 F 0 "C2" V 6302 1900 50  0000 C CNN
 F 1 ".1uF" V 6211 1900 50  0000 C CNN
-F 2 "" H 6088 1750 50  0001 C CNN
+F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 6088 1750 50  0001 C CNN
 F 3 "~" H 6050 1900 50  0001 C CNN
 	1    6050 1900
 	0    -1   -1   0   
@@ -150,7 +144,7 @@ U 1 1 5CBAF261
 P 6050 4100
 F 0 "C3" V 6302 4100 50  0000 C CNN
 F 1 ".1uF" V 6211 4100 50  0000 C CNN
-F 2 "" H 6088 3950 50  0001 C CNN
+F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 6088 3950 50  0001 C CNN
 F 3 "~" H 6050 4100 50  0001 C CNN
 	1    6050 4100
 	0    -1   -1   0   
@@ -161,7 +155,7 @@ U 1 1 5CB78612
 P 8400 2450
 F 0 "C4" V 8652 2450 50  0000 C CNN
 F 1 ".1uF" V 8561 2450 50  0000 C CNN
-F 2 "" H 8438 2300 50  0001 C CNN
+F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 8438 2300 50  0001 C CNN
 F 3 "~" H 8400 2450 50  0001 C CNN
 	1    8400 2450
 	0    1    1    0   
@@ -194,7 +188,7 @@ U 1 1 5CB9E54E
 P 3950 2500
 F 0 "C1" V 4202 2500 50  0000 C CNN
 F 1 ".1uF" V 4111 2500 50  0000 C CNN
-F 2 "" H 3988 2350 50  0001 C CNN
+F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 3988 2350 50  0001 C CNN
 F 3 "~" H 3950 2500 50  0001 C CNN
 	1    3950 2500
 	0    -1   -1   0   
@@ -453,7 +447,7 @@ U 1 1 5CB76AFF
 P 7700 3000
 F 0 "IC1" H 8250 3265 50  0000 C CNN
 F 1 "AT28C64B-15PU" H 8250 3174 50  0000 C CNN
-F 2 "DIP1556W56P254L3702H483Q28N" H 8650 3100 50  0001 L CNN
+F 2 "Package_DIP:DIP-28_W15.24mm_Socket" H 8650 3100 50  0001 L CNN
 F 3 "https://componentsearchengine.com/Datasheets/1/AT28C64B-15PU.pdf" H 8650 3000 50  0001 L CNN
 F 4 "AT28C64B-15PU, Parallel EEPROM Memory 64kbit, Parallel, 150ns 4.5  5.5 V, 28-Pin PDIP" H 8650 2900 50  0001 L CNN "Description"
 F 5 "4.826" H 8650 2800 50  0001 L CNN "Height"
@@ -581,14 +575,6 @@ Text GLabel 5500 2650 0    50   Input ~ 0
 srNotResetAll
 Text GLabel 4100 3700 2    50   Output ~ 0
 srNotResetAll
-Wire Bus Line
-	9200 3100 9200 5050
-Wire Bus Line
-	6700 2450 6700 5050
-Wire Bus Line
-	2700 1550 2700 3900
-Wire Bus Line
-	7300 1550 7300 3600
 Wire Wire Line
 	3700 4700 3700 5100
 $Comp
@@ -602,4 +588,12 @@ F 3 "" H 3700 5100 50  0001 C CNN
 	1    3700 5100
 	1    0    0    -1  
 $EndComp
+Wire Bus Line
+	2700 1550 2700 3900
+Wire Bus Line
+	7300 1550 7300 3600
+Wire Bus Line
+	6700 2450 6700 5050
+Wire Bus Line
+	9200 3100 9200 5050
 $EndSCHEMATC
