@@ -442,6 +442,22 @@ void write_packet(word address, byte *data, word len)
 }
 
 
+/* Very that the received xmodem packet matches what was
+ *  written to the eeprom.
+ */
+int verify_packet(word address, byte *data, word len)
+{
+    word i;
+
+    for (i = 0; i < len; i++, address++, data++) {
+        if (read_byte(address) != *data) {
+            return 0;
+        }
+    }
+    return 1;
+}
+
+
 /* Clear the outputs of all shift registers to 0.
  */
 void clear_shift_regs(void)
@@ -813,6 +829,10 @@ void cmd_xmodem(void)
         }
         // no errors, send an ACK and write the pages to the eeprom
         write_packet(addr, packet, XMODEM_PACKET_MAX);
+        if (!verify_packet(addr, packet, XMODEM_PACKET_MAX)) {
+            abort_xmodem("verify failed writing packet, aborting");
+            return;
+        }
         addr += XMODEM_PACKET_MAX;
         prev_pkt_num = pkt_num;
         pkt_num = remote_pkt_num + 1;
