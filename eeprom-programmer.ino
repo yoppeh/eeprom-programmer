@@ -15,6 +15,7 @@
  *  Newline transmit: LF
  */
 
+/* These are used in the x-modem protocol */
 #define CHAR_SOH            0x01
 #define CHAR_EOT            0x04
 #define CHAR_ACK            0x06
@@ -27,6 +28,7 @@
 #define XMODEM_DELAY        2000
 #define XMODEM_PACKET_MAX   128
 
+/* Serial commands accepted by the programmer */
 #define CMD_ERASE           'e'
 #define CMD_FILL            'f'
 #define CMD_HELP            'h'
@@ -37,11 +39,16 @@
 
 #define SERIAL_BAUD         57600
 
+/* Set this to the size, in bytes of the EEPROM. In the case of the at28c64b,
+ * it's 8k. The page size should always be 64 for the at28 series (I believe).
+ */
 #define EEPROM_SIZE         8192
 #define PAGE_SIZE           64
 
+/* Milliseconds to wait for a write to complete. */
 #define WRITE_DELAY         25
 
+/* Pin assignments */
 const int srSerialData = A0;
 const int srSerialClock = A1;
 const int srNotOutputEnable = A2;
@@ -242,7 +249,7 @@ void __attribute__((always_inline)) write_data(byte data)
 }
 
 
-/* Reads the data value in the eeprom at the address currently on the address
+/* Reads the data value in the EEPROM at the address currently on the address
  * pins. Assumes that the I/O lines are already setup as INPUTs and that the
  * OE line is set properly.
  */
@@ -274,7 +281,7 @@ void io_set_input(void)
 
 /* Executes the appropriate write sequence to enable the software locking
  * mechanism of the chip. After this function executes, the chip will not
- * recognize writes until unlock_chip() is called on it.
+ * recognize writes unless unlock_chip() is called.
  */
 int lock_chip(void)
 {
@@ -379,7 +386,7 @@ int write_byte(word address, byte data)
     // set the address pins from the shift registers
     shift_address(address);
 
-    // put the data on the eeprom's i/o pins
+    // put the data on the EEPROM's i/o pins
     write_data(data);
     
     // setup the we-controlled write state
@@ -395,8 +402,7 @@ int write_byte(word address, byte data)
 }
 
 
-/* Write a specified page of a specified length (64 bytes max) at a specified 
- * address.
+/* Write a page of a given length (64 bytes max) at a given address.
  */
 int write_page(word address, byte *data, byte len)
 {
@@ -411,7 +417,7 @@ int write_page(word address, byte *data, byte len)
     while (len--) {
         // put address into shift registers
         shift_address(address++);
-        // put data byte on eeprom pins
+        // put data byte on EEPROM pins
         write_data(*data++);
         // bring write enable low
         digitalWrite(eeNotWriteEnable, LOW);
@@ -430,7 +436,7 @@ int write_page(word address, byte *data, byte len)
 }
 
 
-/* Write an xmodem packet 1 eeprom page at a time. 
+/* Write an xmodem packet 1 EEPROM page at a time. 
  */
 void write_packet(word address, byte *data, word len)
 {
@@ -443,7 +449,7 @@ void write_packet(word address, byte *data, word len)
 
 
 /* Very that the received xmodem packet matches what was
- *  written to the eeprom.
+ *  written to the EEPROM.
  */
 int verify_packet(word address, byte *data, word len)
 {
@@ -471,7 +477,9 @@ void clear_shift_regs(void)
 }
 
 
-/* Invoke the eeprom's chip erase mechanism.
+/* Erase the EEPROM by writing all 1s to it. We do it this way, since the
+ * hardware isn't there to do a hardware erase. That would require putting
+ * a 12 volt line in the circuit, and... why bother...
  */
 int erase_eeprom(void)
 {
@@ -498,7 +506,7 @@ int erase_eeprom(void)
 }
 
 
-/* Places the data at the specified address on the data bus.
+/* Returns the byte at the given address in the EEPROM.
  */
 byte read_byte(word address)
 {
@@ -523,8 +531,9 @@ byte read_byte(word address)
 }
 
 
-/* Writes a pattern to the eeprom. The pattern is address = address & 0xff. So,
- * essentially, every address is set to the value of its lower 8 bits.
+/* Writes a pattern to the EEPROM. The pattern is address = address & 0xff. So,
+ * essentially, every address is set to the value of its lower 8 bits. I guess
+ * that's the long way to say, it repeats from 0 to 255 until the end of memory.
  */
 int write_pattern(void)
 {
@@ -545,10 +554,11 @@ int write_pattern(void)
 }
 
 
-/* Reads the entire eeprom. Prints the data out in the format: 
+/* Reads the entire EEPROM. Prints the data out in the format: 
  * aaaa  xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx xx   ................
- * Where aaaa is the address, xx is 16 bytes of data and ...............
- * is the ascii representation for each data byte, if it is printable.
+ * Where aaaa is the address in hex, xx is 16 bytes of data in hex and 
+ * ............... is the ascii representation for each data byte, if it is 
+ * printable.
  */
 void read_eeprom(void)
 {
@@ -666,7 +676,7 @@ int read_serial(void)
 }
 
 
-/* Erase the eeprom.
+/* Erase the EEPROM.
  */
 void cmd_erase(void)
 {
@@ -680,7 +690,7 @@ void cmd_erase(void)
 }
 
 
-/* Fill the eeprom with a sequence.
+/* Fill the EEPROM with a sequence.
  */
 void cmd_fill(void)
 {    
@@ -722,7 +732,7 @@ void cmd_lock(void)
 }
 
 
-/* Read the entire eeprom.
+/* Read the entire EEPROM.
  */
 void cmd_read(void)
 {
@@ -745,7 +755,7 @@ void cmd_unlock(void)
 }
 
 
-/* Begin xmodem transfer to the eeprom.
+/* Begin xmodem transfer to the EEPROM.
  */
 void cmd_xmodem(void)
 {
@@ -797,7 +807,7 @@ void cmd_xmodem(void)
             chk += (byte)ch;
         }
         remote_chk = read_serial();
-        // make sure data < eeprom size
+        // make sure data < EEPROM size
         if (addr == EEPROM_SIZE) {
             abort_xmodem("image is too large for eeprom");
             return;
@@ -827,7 +837,7 @@ void cmd_xmodem(void)
             error_count++;
             goto skip;
         }
-        // no errors, send an ACK and write the pages to the eeprom
+        // no errors, send an ACK and write the pages to the EEPROM 
         write_packet(addr, packet, XMODEM_PACKET_MAX);
         if (!verify_packet(addr, packet, XMODEM_PACKET_MAX)) {
             abort_xmodem("verify failed writing packet, aborting");
