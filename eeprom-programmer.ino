@@ -449,7 +449,7 @@ void write_packet(word address, byte *data, word len)
 
 
 /* Very that the received xmodem packet matches what was
- *  written to the EEPROM.
+ * written to the EEPROM.
  */
 int verify_packet(word address, byte *data, word len)
 {
