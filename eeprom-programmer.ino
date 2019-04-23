@@ -590,6 +590,21 @@ void show_prompt(void)
     Serial.print("> ");
 }
 
+
+/* Display serial command help.
+ */
+void cmd_help(void)
+{
+    Serial.println("commands:");
+    Serial.print(CMD_ERASE); Serial.println(" - erase the eeprom");
+    Serial.print(CMD_FILL); Serial.println(" - fill eeprom with incrementing bytes");
+    Serial.print(CMD_HELP); Serial.println(" - help (this) text");
+    Serial.print(CMD_LOCK); Serial.println(" - lock the eeprom against writes");
+    Serial.print(CMD_READ); Serial.println(" - read and dump eeprom contents");
+    Serial.print(CMD_UNLOCK); Serial.println(" - unlock eeprom writes");
+    Serial.print(CMD_XMODEM); Serial.println(" - xmodem transfer binary file to eeprom");
+}
+
  
 /* Initial board setup.
  */
@@ -627,6 +642,7 @@ void setup()
     digitalWrite(eeNotOutputEnable, HIGH);
 
     Serial.begin(SERIAL_BAUD);
+    cmd_help();
     show_prompt();
 }
 
@@ -701,21 +717,6 @@ void cmd_fill(void)
     } else {
         Serial.println(" ok");
     }
-}
-
-
-/* Display serial command help.
- */
-void cmd_help(void)
-{
-    Serial.println("commands:");
-    Serial.print(CMD_ERASE); Serial.println(" - erase the eeprom");
-    Serial.print(CMD_FILL); Serial.println(" - fill eeprom with incrementing bytes");
-    Serial.print(CMD_HELP); Serial.println(" - help (this) text");
-    Serial.print(CMD_LOCK); Serial.println(" - lock the eeprom against writes");
-    Serial.print(CMD_READ); Serial.println(" - read and dump eeprom contents");
-    Serial.print(CMD_UNLOCK); Serial.println(" - unlock eeprom writes");
-    Serial.print(CMD_XMODEM); Serial.println(" - xmodem transfer binary file to eeprom");
 }
 
 
