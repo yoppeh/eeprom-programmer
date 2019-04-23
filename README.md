@@ -1,7 +1,7 @@
 # eeprom-programmer
-An Arduino Nano sketch and schematic for an Atmel 28cx programmer. I specifically designed this for an 8kx8 eeprom
-(AT28C64B-15PU). If you're using a different size, you'll have to adjust everything for the extra/fewer address
-lines, of course.
+An Arduino Nano sketch and schematic for an Atmel 28cx programmer. This is part of my [ROL](http://yoppeh.com/2019/04/07/rol-00000000-ready/) 
+project.  I specifically designed this for an 8kx8 eeprom (AT28C64B-15PU). If you're using a different size, you'll have to adjust everything 
+for the extra/fewer address lines, of course.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
 - (e)rase - erases the entire chip.
@@ -17,7 +17,7 @@ Any standard terminal program can be used to talk to the programmer. I use the f
 - [teraterm](https://ttssh2.osdn.jp/index.html.en) for Windows
 - [minicom](https://linux.die.net/man/1/minicom) for Linux
 
-The programmer uses standard x-modem, as provided by any respectable terminal program-and certainly all of the
+The programmer uses standard x-modem, as provided by any respectable terminal program—and certainly all of the
 above listed terminal programs, to put binary files onto the eeprom. No other software is required. The programmer
 will verify every 64 bytes as they are written (the size of an internal eeprom page).
 
