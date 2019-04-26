@@ -12,7 +12,7 @@ The Arduino Nano sketch implements a serial interface to the programmer. It acce
 - (u)nlock - turns off the software write-protect mechanism of the chip.
 - (x)modem - does an x-modem transfer of data to the chip.
 
-[serial](../assets/serial-startup-screenshot.png?raw=true)
+![serial](../assets/serial-startup-screenshot.png?raw=true)
 
 Any standard terminal program can be used to talk to the programmer. I use the following:
 - [serial](http://www.decisivetactics.com/products/serial/) for the Mac
