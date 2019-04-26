@@ -21,4 +21,4 @@ purchased off ebay that arrive locked. Try doing an unlock on a chip if you have
 I built this circuit and developed the code on a breadboard:
 ![breadboard image](../assets/breadboard.png?raw=true)
 
-The circuit comes from [Ben Eater](https://www.youtube.com/watch?v=K88pgWhEb1M)
+The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M).
