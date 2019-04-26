@@ -4,14 +4,6 @@ project.  I specifically designed this for an 8kx8 eeprom (AT28C64B-15PU). If yo
 for the extra/fewer address lines, of course.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
-- (e)rase - erases the entire chip.
-- (f)ill - fills the chip with a repeating pattern from 0 to 255.
-- (h)elp - lists all available commands and what they do.
-- (l)ock - turns on the software write-protect mechanism of the chip.
-- (r)ead - produces a dump of the entire contents of the chip.
-- (u)nlock - turns off the software write-protect mechanism of the chip.
-- (x)modem - does an x-modem transfer of data to the chip.
-
 ![serial](../assets/serial-startup-screenshot.png?raw=true)
 
 Any standard terminal program can be used to talk to the programmer. I use the following:
