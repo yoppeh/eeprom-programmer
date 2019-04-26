@@ -1,5 +1,5 @@
 # eeprom-programmer
-An Arduino Nano sketch and schematic for an Atmel 28cx programmer. This is part of my [ROL](http://yoppeh.com/2019/04/07/rol-00000000-ready/) 
+An Arduino Nano sketch and schematic for an Atmel 28cx programmer. This is part of my [ROL](https://github.com/yoppeh/rol) 
 project.  I specifically designed this for an 8kx8 eeprom (AT28C64B-15PU). If you're using a different size, you'll have to adjust everything 
 for the extra/fewer address lines, of course.
 
