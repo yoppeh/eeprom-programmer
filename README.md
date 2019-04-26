@@ -18,6 +18,7 @@ will verify every 64 bytes as they are written (the size of an internal eeprom p
 Although the eeprom chips are supposed to come from the factory unlocked, I've heard stories of some chips being
 purchased off ebay that arrive locked. Try doing an unlock on a chip if you have problems writing to it.
 
-I developed this circuit and code on a breadboard:
+I built this circuit and developed the code on a breadboard:
 ![breadboard image](../assets/breadboard.png?raw=true)
 
+The circuit comes from [Ben Eater](https://www.youtube.com/watch?v=K88pgWhEb1M)
