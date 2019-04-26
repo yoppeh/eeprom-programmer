@@ -4,7 +4,13 @@ project.  I specifically designed this for an 8kx8 eeprom (AT28C64B-15PU). If yo
 for the extra/fewer address lines, of course.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
-![serial](../assets/serial-startup-screenshot.png?raw=true)
+- e - erase the program
+- f - fill eeprom with incrementing bytes
+- h - help (this) text
+- l - lock the eeprom against writes
+- r - read and dump eeprom contents
+- u - unlock eeprom writes
+- x - xmodem transfer binary file to eeprom
 
 Any standard terminal program can be used to talk to the programmer. I use the following:
 - [serial](http://www.decisivetactics.com/products/serial/) for the Mac
@@ -17,8 +23,5 @@ will verify every 64 bytes as they are written (the size of an internal eeprom p
 
 Although the eeprom chips are supposed to come from the factory unlocked, I've heard stories of some chips being
 purchased off ebay that arrive locked. Try doing an unlock on a chip if you have problems writing to it.
-
-I built this circuit and developed the code on a breadboard:
-![breadboard image](../assets/breadboard.png?raw=true)
 
 The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M).
