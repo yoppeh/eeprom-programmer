@@ -6,7 +6,7 @@ encoding utf-8
 Sheet 1 1
 Title "AT28C EEPROM Programmer"
 Date "2019-04-20"
-Rev "0.0.1"
+Rev "a"
 Comp ""
 Comment1 ""
 Comment2 ""
