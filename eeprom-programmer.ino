@@ -49,11 +49,11 @@
 #define WRITE_DELAY         25
 
 /* Pin assignments */
-const int srSerialData = A0;
-const int srSerialClock = A1;
+const int srSerialData = A4;
+const int srSerialClock = A3;
 const int srNotOutputEnable = A2;
-const int srReadClock = A3;
-const int srNotResetAll = A4;
+const int srReadClock = A1;
+const int srNotResetAll = A0;
 const int eeNotWriteEnable = 10;
 const int eeNotChipEnable = 11;
 const int eeNotOutputEnable = 12;
@@ -67,172 +67,188 @@ const int eeD6 = 8;
 const int eeD7 = 9;
 
 
+/* Clear the outputs of all shift registers to 0.
+ */
+void sr_clear(void)
+{
+    digitalWrite(srNotResetAll, HIGH);
+    delay(6);
+    digitalWrite(srNotResetAll, LOW);
+    delay(6);
+    digitalWrite(srNotResetAll, HIGH);
+    delay(6);
+}
+
+
 /* Shifts out a given address on the 74HC595s. The lines are mapped thusly:
- * PORTC, bit 0 = serial data pin (SER)
- * PORTC, bit 1 = serial clock pin (SRCLK)
+ * PORTC, bit 4 = serial data pin (SER)
+ * PORTC, bit 3 = serial clock pin (SRCLK)
+ * PORTC, bit 2 = serial output enable (active low)
+ * PORTC, bit 1 = serial read clock
  *
  * This is all about speed: no loops, no digitalRead()/Write(), always inline.
  * It's expected that the proper directions for the PORT bits used here are
- * already setup properly. Namely, PORTC bits 0 and 1 should be setup for
+ * already setup properly. Namely, PORTC bits 3 and 4 should be setup for
  * output.
  */
-void __attribute__((always_inline)) shift_address(word address)
+void __attribute__((always_inline)) sr_address(word address)
 { 
     // disable the address output
     PORTC &= B11110111;
     PORTC |= B00000100;
     
     // clear clock and data lines
-    PORTC &= B11111100;
+    PORTC &= B11100111;
     // put address bit 15 on data line
-    PORTC |= ((address >> 15) & B00000001);
+    PORTC |= ((address >> 11) & B00010000);
     __asm__ __volatile__ ("nop\n\t");
     // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-    
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 14 on data line
-    PORTC |= ((address >> 14) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 13 on data line
-    PORTC |= ((address >> 13) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 12 on data line
-    PORTC |= ((address >> 12) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 11 on data line
-    PORTC |= ((address >> 11) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 10 on data line
-    PORTC |= ((address >> 10) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 9 on data line
-    PORTC |= ((address >> 9) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 8 on data line
-    PORTC |= ((address >> 8) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 7 on data line
-    PORTC |= ((address >> 7) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 6 on data line
-    PORTC |= ((address >> 6) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 5 on data line
-    PORTC |= ((address >> 5) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 4 on data line
-    PORTC |= ((address >> 4) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 3 on data line
-    PORTC |= ((address >> 3) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 2 on data line
-    PORTC |= ((address >> 2) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 1 on data line
-    PORTC |= ((address >> 1) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11111100;
-    // put address bit 0 on data line
-    PORTC |= ((address >> 0) & B00000001);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00000010;
-    __asm__ __volatile__ ("nop\n\t");
-    
-    // clear clock and data lines
-    PORTC &= B11111100;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // put the address on the output pins
     PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+    
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 14 on data line
+    PORTC |= ((address >> 10) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 13 on data line
+    PORTC |= ((address >> 9) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 12 on data line
+    PORTC |= ((address >> 8) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 11 on data line
+    PORTC |= ((address >> 7) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 10 on data line
+    PORTC |= ((address >> 6) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 9 on data line
+    PORTC |= ((address >> 5) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 8 on data line
+    PORTC |= ((address >> 4) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 7 on data line
+    PORTC |= ((address >> 3) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 6 on data line
+    PORTC |= ((address >> 2) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 5 on data line
+    PORTC |= ((address >> 1) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 4 on data line
+    PORTC |= ((address >> 0) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 3 on data line
+    PORTC |= ((address << 1) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 2 on data line
+    PORTC |= ((address << 2) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 1 on data line
+    PORTC |= ((address << 3) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // clear clock and data lines
+    PORTC &= B11100111;
+    // put address bit 0 on data line
+    PORTC |= ((address << 4) & B00010000);
+    __asm__ __volatile__ ("nop\n\t");
+    // clock line on
+    PORTC |= B00001000;
+    __asm__ __volatile__ ("nop\n\t");
+    
+    // clear clock and data lines
+    PORTC &= B11100111;
+    __asm__ __volatile__ ("nop\n\t");
+
+    // put the address on the output pins by setting output enable low
+    // and setting the read clock high
     PORTC &= B11111011;
+    PORTC |= B00000010;
 }
 
 
@@ -294,19 +310,19 @@ int lock_chip(void)
     io_set_output();
 
     // aah to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0xaa);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // 55h to address 0aaah
-    shift_address(0x0aaa);
+    sr_address(0x0aaa);
     write_data(0x55);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // a0h to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0xa0);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
@@ -330,37 +346,37 @@ int unlock_chip(void)
     io_set_output();
 
     // aah to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0xaa);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // 55h to address 0aaah
-    shift_address(0x0aaa);
+    sr_address(0x0aaa);
     write_data(0x55);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // 80h to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0x80);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // aah to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0xaa);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // 55h to address 0aaah
-    shift_address(0x0aaa);
+    sr_address(0x0aaa);
     write_data(0x55);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
 
     // 20h to address 1555h
-    shift_address(0x1555);
+    sr_address(0x1555);
     write_data(0x20);
     digitalWrite(eeNotWriteEnable, LOW);
     digitalWrite(eeNotWriteEnable, HIGH);
@@ -384,7 +400,7 @@ int write_byte(word address, byte data)
     digitalWrite(eeNotWriteEnable, HIGH);
     
     // set the address pins from the shift registers
-    shift_address(address);
+    sr_address(address);
 
     // put the data on the EEPROM's i/o pins
     write_data(data);
@@ -416,7 +432,7 @@ int write_page(word address, byte *data, byte len)
 
     while (len--) {
         // put address into shift registers
-        shift_address(address++);
+        sr_address(address++);
         // put data byte on EEPROM pins
         write_data(*data++);
         // bring write enable low
@@ -464,19 +480,6 @@ int verify_packet(word address, byte *data, word len)
 }
 
 
-/* Clear the outputs of all shift registers to 0.
- */
-void clear_shift_regs(void)
-{
-    digitalWrite(srNotResetAll, HIGH);
-    delay(6);
-    digitalWrite(srNotResetAll, LOW);
-    delay(6);
-    digitalWrite(srNotResetAll, HIGH);
-    delay(6);
-}
-
-
 /* Erase the EEPROM by writing all 1s to it. We do it this way, since the
  * hardware isn't there to do a hardware erase. That would require putting
  * a 12 volt line in the circuit, and... why bother...
@@ -519,7 +522,7 @@ byte read_byte(word address)
     // all data pins are inputs
     io_set_input();
    
-    shift_address(address);
+    sr_address(address);
     
     digitalWrite(eeNotOutputEnable, LOW);
     
@@ -610,6 +613,7 @@ void cmd_help(void)
  */
 void setup() 
 {
+    int i;
     pinMode(srSerialData, OUTPUT);
     pinMode(srSerialClock, OUTPUT);
     pinMode(srNotOutputEnable, OUTPUT);
@@ -630,8 +634,8 @@ void setup()
     pinMode(eeD6, OUTPUT);
     pinMode(eeD7, OUTPUT);
   
-    clear_shift_regs();
-  
+    sr_clear();
+
     digitalWrite(srSerialData, LOW);
     digitalWrite(srSerialClock, LOW);
     digitalWrite(srNotOutputEnable, HIGH);
@@ -640,7 +644,7 @@ void setup()
     digitalWrite(eeNotWriteEnable, HIGH);
     digitalWrite(eeNotChipEnable, LOW);
     digitalWrite(eeNotOutputEnable, HIGH);
-
+    
     Serial.begin(SERIAL_BAUD);
     cmd_help();
     show_prompt();
