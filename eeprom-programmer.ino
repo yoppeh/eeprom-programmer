@@ -1,19 +1,31 @@
 /*******************************************************************************
  * eeprom-programmer.ino
  * 
- * Arduino Nano code for the at28c64b-15pu programmer. Note that this is 
+ * Arduino Nano code for the at28c64b-15pu programmer. Note that this code is 
  * specific to the Nano (really, the ATmega328P). If you use this on another 
- * device, either make sure the port mappings are the same or you will need to 
+ * device, either make sure the port mappings are the same or you will need to
  * rewrite most of the code to use the correct mappings.
+ *
+ * I haven't looked at other EEPROMs, so I don't know how easy/difficult it 
+ * would be to adapt this code to one. I'm not even sure if the pinouts for the
+ * address lines or page sizes for the block write operations are the same
+ * for different sizes of this same chip.
+ *
+ * The clock speed of the Nano (16MHz) is also assumed for getting the number
+ * of nops to use for delays: 1 nop = 1 clock cycle = 1 / speed in MHz. So,
+ * in the case of the Nano, 1 nop = 1 / 16000000 = 62.5ns.
  * 
  * Serial port settings:
  *  57600, 8n1, no flow control
+ *
+ * If you want to use other than 57600, change the SERIAL_BAUD constant below.
  *  
  * Terminal settings:
  *  turn off local echo
  *  Newline receive: LF
  *  Newline transmit: LF
  */
+
 
 /* These are used in the x-modem protocol */
 #define CHAR_SOH            0x01
@@ -37,10 +49,13 @@
 #define CMD_UNLOCK          'u'
 #define CMD_XMODEM          'x'
 
+/* Change this to match whatever baud rate you want to use for the serial 
+ * connection. 
+ */
 #define SERIAL_BAUD         57600
 
 /* Set this to the size, in bytes of the EEPROM. In the case of the at28c64b,
- * it's 8k. The page size should always be 64 for the at28 series (I believe).
+ * it's 8k. 
  */
 #define EEPROM_SIZE         8192
 #define PAGE_SIZE           64
@@ -48,7 +63,32 @@
 /* Milliseconds to wait for a write to complete. */
 #define WRITE_DELAY         25
 
-/* Pin assignments */
+
+/* Pin assignments
+ *
+ * These pin assigments correspond to these port mappings on the Atmega328P
+ * (and Atmega168):
+ *
+ * x4HC595 shift registers
+ *     PORTC, bit 4 = serial data pin (SER)
+ *     PORTC, bit 3 = serial clock pin (SRCLK)
+ *     PORTC, bit 2 = serial output enable (/OE)
+ *     PORTC, bit 1 = serial read clock (RCLK)
+ *     PORTC, bit 0 = reset all (/SRCLR)
+ *
+ * at28c64b eeprom
+ *     PORTB, bit 4 = eeprom output enable (/OE)
+ *     PORTB, bit 3 = eeprom chip enable (/CE)
+ *     PORTB, bit 2 = eeprom write enable (/WE)
+ *     PORTB, bit 1 = I/O7
+ *     PORTB, bit 0 = I/O6
+ *     PORTD, bit 7 = I/O5
+ *     PORTD, bit 6 = I/O4  
+ *     PORTD, bit 5 = I/O3
+ *     PORTD, bit 4 = I/O2
+ *     PORTD, bit 3 = I/O1
+ *     PORTD, bit 2 = I/O0
+ */
 const int srSerialData = A4;
 const int srSerialClock = A3;
 const int srNotOutputEnable = A2;
@@ -67,188 +107,82 @@ const int eeD6 = 8;
 const int eeD7 = 9;
 
 
-/* Clear the outputs of all shift registers to 0.
+/* Clear the outputs of all shift registers to 0 by toggling the /srclr line.
+ *
+ *
+ * /SRCLR needs to be low for 120ns, worst case. That's 3 nops, counting a
+ * nop as 60ns.
  */
 void sr_clear(void)
 {
-    digitalWrite(srNotResetAll, HIGH);
-    delay(6);
-    digitalWrite(srNotResetAll, LOW);
-    delay(6);
-    digitalWrite(srNotResetAll, HIGH);
-    delay(6);
+    PORTC = B00000100;
+    __asm__ __volatile__ ("nop\n\t");
+    __asm__ __volatile__ ("nop\n\t");
+    __asm__ __volatile__ ("nop\n\t");
+    PORTC = B00000101;
+}
+
+
+/* Setup the shift registers and shift in an address bit. Assumes that the bit
+ * in question has already been shifted into bit 4: so, in the same position as
+ * the "1" here: 00010000.
+ */
+void __attribute__((always_inline)) sr_shift_bit(byte bit)
+{
+    bit &= B00010000;
+    // clear clock and data lines
+    PORTC = B00000101 | bit;
+    __asm__ __volatile__ ("nop\n\t");
+    PORTC = B00001101 | bit;
+    __asm__ __volatile__ ("nop\n\t");
 }
 
 
 /* Shifts out a given address on the 74HC595s. The lines are mapped thusly:
- * PORTC, bit 4 = serial data pin (SER)
- * PORTC, bit 3 = serial clock pin (SRCLK)
- * PORTC, bit 2 = serial output enable (active low)
- * PORTC, bit 1 = serial read clock
  *
  * This is all about speed: no loops, no digitalRead()/Write(), always inline.
  * It's expected that the proper directions for the PORT bits used here are
  * already setup properly. Namely, PORTC bits 3 and 4 should be setup for
  * output.
+ *
+ * The observant programmer may notice we shift 16 bits onto the address lines.
+ * This isn't a problem, even though we only have 13 address lines (on the
+ * targetted 8k x 8 chip, chips with more memory, of course, will have more
+ * address lines). The upper three bits simply aren't connected to anything and
+ * the order in which the bits go out the shift registers guarantees that the
+ * lower bits are always in the right place, no matter how many bits are 
+ * shifted out. If this ends up being used with a larger EEPROM, then this
+ * function at least won't have to be modified.
  */
 void __attribute__((always_inline)) sr_address(word address)
 { 
-    // disable the address output
-    PORTC &= B11110111;
+    // disable output
     PORTC |= B00000100;
+
+    // shift the address into the shift registers
+    sr_shift_bit(address >> 11);
+    sr_shift_bit(address >> 10);
+    sr_shift_bit(address >> 9);
+    sr_shift_bit(address >> 8);
+    sr_shift_bit(address >> 7);
+    sr_shift_bit(address >> 6);
+    sr_shift_bit(address >> 5);
+    sr_shift_bit(address >> 4);
+    sr_shift_bit(address >> 3);
+    sr_shift_bit(address >> 2);
+    sr_shift_bit(address >> 1);
+    sr_shift_bit(address >> 0);
+    sr_shift_bit(address << 1);
+    sr_shift_bit(address << 2);
+    sr_shift_bit(address << 3);
+    sr_shift_bit(address << 4);
+
+    // make sure the clock and data lines are clear
+    PORTC = B00000101;
     
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 15 on data line
-    PORTC |= ((address >> 11) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-    
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 14 on data line
-    PORTC |= ((address >> 10) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 13 on data line
-    PORTC |= ((address >> 9) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 12 on data line
-    PORTC |= ((address >> 8) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 11 on data line
-    PORTC |= ((address >> 7) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 10 on data line
-    PORTC |= ((address >> 6) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 9 on data line
-    PORTC |= ((address >> 5) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 8 on data line
-    PORTC |= ((address >> 4) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 7 on data line
-    PORTC |= ((address >> 3) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 6 on data line
-    PORTC |= ((address >> 2) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 5 on data line
-    PORTC |= ((address >> 1) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 4 on data line
-    PORTC |= ((address >> 0) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 3 on data line
-    PORTC |= ((address << 1) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 2 on data line
-    PORTC |= ((address << 2) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 1 on data line
-    PORTC |= ((address << 3) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-
-    // clear clock and data lines
-    PORTC &= B11100111;
-    // put address bit 0 on data line
-    PORTC |= ((address << 4) & B00010000);
-    __asm__ __volatile__ ("nop\n\t");
-    // clock line on
-    PORTC |= B00001000;
-    __asm__ __volatile__ ("nop\n\t");
-    
-    // clear clock and data lines
-    PORTC &= B11100111;
-    __asm__ __volatile__ ("nop\n\t");
-
     // put the address on the output pins by setting output enable low
     // and setting the read clock high
-    PORTC &= B11111011;
-    PORTC |= B00000010;
+    PORTC = B00000011;
 }
 
 
@@ -267,7 +201,7 @@ void __attribute__((always_inline)) write_data(byte data)
 
 /* Reads the data value in the EEPROM at the address currently on the address
  * pins. Assumes that the I/O lines are already setup as INPUTs and that the
- * OE line is set properly.
+ * /OE line is set properly.
  */
 byte __attribute__((always_inline)) read_data(void)
 {
@@ -424,7 +358,7 @@ int write_page(word address, byte *data, byte len)
 {
     // all data pins are outputs
     io_set_output();
-    
+
     // setup initial state for control lines
     digitalWrite(eeNotChipEnable, LOW);
     digitalWrite(eeNotOutputEnable, HIGH);
@@ -613,7 +547,6 @@ void cmd_help(void)
  */
 void setup() 
 {
-    int i;
     pinMode(srSerialData, OUTPUT);
     pinMode(srSerialClock, OUTPUT);
     pinMode(srNotOutputEnable, OUTPUT);
