@@ -171,7 +171,7 @@ void __attribute__((always_inline)) sr_address(word address)
     sr_shift_bit(address >> 3);
     sr_shift_bit(address >> 2);
     sr_shift_bit(address >> 1);
-    sr_shift_bit(address >> 0);
+    sr_shift_bit(address);
     sr_shift_bit(address << 1);
     sr_shift_bit(address << 2);
     sr_shift_bit(address << 3);
