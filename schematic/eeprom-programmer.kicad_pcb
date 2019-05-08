@@ -665,8 +665,8 @@
     )
   )
 
-  (gr_text "http://github.com:yoppeh/eeprom-programmer   Rev. A" (at 130.556 89.408 90) (layer F.SilkS)
-    (effects (font (size 1 1) (thickness 0.1)))
+  (gr_text "http://github.com:yoppeh/eeprom-programmer   Rev. A" (at 130.556 68.58 90) (layer F.SilkS)
+    (effects (font (size 1 1) (thickness 0.1)) (justify right))
   )
   (gr_line (start 131.572 66.548) (end 91.948 66.548) (layer Edge.Cuts) (width 0.1) (tstamp 5CD2F136))
   (gr_line (start 131.064 135.636) (end 131.572 135.636) (layer Edge.Cuts) (width 0.1) (tstamp 5CD2EC39))
