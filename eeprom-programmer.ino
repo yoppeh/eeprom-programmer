@@ -108,8 +108,6 @@ const int eeD7 = 9;
 
 
 /* Clear the outputs of all shift registers to 0 by toggling the /srclr line.
- *
- *
  * /SRCLR needs to be low for 120ns, worst case. That's 3 nops, counting a
  * nop as 60ns.
  */
@@ -138,7 +136,7 @@ void __attribute__((always_inline)) sr_shift_bit(byte bit)
 }
 
 
-/* Shifts out a given address on the 74HC595s. The lines are mapped thusly:
+/* Shifts out a given address on the 74HC595s.
  *
  * This is all about speed: no loops, no digitalRead()/Write(), always inline.
  * It's expected that the proper directions for the PORT bits used here are
