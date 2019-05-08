@@ -57,7 +57,7 @@
     (mod_text_width 0.15)
     (pad_size 1.6 1.6)
     (pad_drill 0.8)
-    (pad_to_mask_clearance 0)
+    (pad_to_mask_clearance 0.0508)
     (aux_axis_origin 0 0)
     (visible_elements 7FFFFFFF)
     (pcbplotparams
@@ -1088,7 +1088,7 @@
   (segment (start 105.156 96.012) (end 104.648 95.504) (width 0.1534) (layer B.Cu) (net 32))
   (segment (start 104.648 95.504) (end 104.648 92.81521) (width 0.1534) (layer B.Cu) (net 32))
 
-  (zone (net 16) (net_name GND) (layer B.Cu) (tstamp 5CD2FAD1) (hatch edge 0.508)
+  (zone (net 16) (net_name GND) (layer B.Cu) (tstamp 5CD2FBCC) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 1))
@@ -1505,7 +1505,7 @@
       )
     )
   )
-  (zone (net 16) (net_name GND) (layer F.Cu) (tstamp 5CD2FACE) (hatch edge 0.508)
+  (zone (net 16) (net_name GND) (layer F.Cu) (tstamp 5CD2FBC9) (hatch edge 0.508)
     (connect_pads (clearance 0.508))
     (min_thickness 0.254)
     (fill yes (arc_segments 32) (thermal_gap 0.508) (thermal_bridge_width 1))
