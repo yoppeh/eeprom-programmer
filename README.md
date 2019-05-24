@@ -24,3 +24,6 @@ Although the eeprom chips are supposed to come from the factory unlocked, I've h
 purchased off ebay that arrive locked. Try doing an unlock on a chip if you have problems writing to it.
 
 The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M).
+
+Here is a fresh board, built up after receipt from Osh Park.
+![eeprom-programmer board](populated-board.jpg)
