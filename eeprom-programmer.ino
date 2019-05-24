@@ -46,8 +46,15 @@
 #define CMD_HELP            'h'
 #define CMD_LOCK            'l'
 #define CMD_READ            'r'
+#define CMD_SOFTWARE        's'
 #define CMD_UNLOCK          'u'
 #define CMD_XMODEM          'x'
+
+/* Software version
+ */
+#define VERSION_MAJ         1
+#define VERSION_MIN         0
+#define VERSION_BLD         0
 
 /* Change this to match whatever baud rate you want to use for the serial 
  * connection. 
@@ -536,6 +543,7 @@ void cmd_help(void)
     Serial.print(CMD_HELP); Serial.println(" - help (this) text");
     Serial.print(CMD_LOCK); Serial.println(" - lock the eeprom against writes");
     Serial.print(CMD_READ); Serial.println(" - read and dump eeprom contents");
+    Serial.print(CMD_SOFTWARE); Serial.println(" - print software info");
     Serial.print(CMD_UNLOCK); Serial.println(" - unlock eeprom writes");
     Serial.print(CMD_XMODEM); Serial.println(" - xmodem transfer binary file to eeprom");
 }
@@ -675,6 +683,18 @@ void cmd_read(void)
     Serial.println("reading eeprom:");
     read_eeprom();
     Serial.println("all addresses read");
+}
+
+
+/* Print software info.
+ */
+void cmd_software(void)
+{
+    char version[12];
+    Serial.println("software info:");
+    sprintf(version, "%02i\.%02i.%02i", VERSION_MAJ, VERSION_MIN, VERSION_BLD);
+    Serial.print("version: ");
+    Serial.println(version);
 }
 
 
@@ -848,6 +868,9 @@ void process_cmd(char cmd)
             break;
         case CMD_READ:
             cmd_read();
+            break;
+        case CMD_SOFTWARE:
+            cmd_software();
             break;
         case CMD_UNLOCK:
             cmd_unlock();

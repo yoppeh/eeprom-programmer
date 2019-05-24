@@ -2,3 +2,4 @@
 *-backup
 *.bak
 sym-lib-table
+mmap_*
