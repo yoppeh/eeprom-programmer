@@ -8,6 +8,7 @@ The Arduino Nano sketch implements a serial interface to the programmer. It acce
 - h - help (this) text
 - l - lock the eeprom against writes
 - r - read and dump eeprom contents
+- s - software info
 - u - unlock eeprom writes
 - x - xmodem transfer binary file to eeprom
 
