@@ -3,7 +3,7 @@ An Arduino Nano sketch and schematic for an Atmel 28cx programmer. I specificall
 for the extra/fewer address lines, of course.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
-- e - erase the program
+- e - erase the eeprom
 - f - fill eeprom with incrementing bytes
 - h - help (this) text
 - l - lock the eeprom against writes
