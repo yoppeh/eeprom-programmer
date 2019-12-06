@@ -5,8 +5,8 @@ $Descr A 11000 8500
 encoding utf-8
 Sheet 1 1
 Title "AT28C EEPROM Programmer"
-Date "2019-04-20"
-Rev "a"
+Date "2019-12-05"
+Rev "b"
 Comp ""
 Comment1 ""
 Comment2 ""
@@ -31,145 +31,6 @@ Text GLabel 2700 4200 0    50   Output ~ 0
 eeNotChipEnable
 Text GLabel 2700 4300 0    50   Output ~ 0
 eeNotOutputEnable
-$Comp
-L eeprom-programmer:74HC595 U1
-U 1 1 5CB78989
-P 5500 2750
-F 0 "U1" H 5500 3531 50  0000 C CNN
-F 1 "74HC595" H 5500 3440 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 5500 2750 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 5500 2750 50  0001 C CNN
-	1    5500 2750
-	1    0    0    -1  
-$EndComp
-$Comp
-L eeprom-programmer:74HC595 U2
-U 1 1 5CB788C3
-P 5500 4950
-F 0 "U2" H 5500 5731 50  0000 C CNN
-F 1 "74HC595" H 5500 5640 50  0000 C CNN
-F 2 "Package_DIP:DIP-16_W7.62mm_Socket" H 5500 4950 50  0001 C CNN
-F 3 "http://www.ti.com/lit/ds/symlink/sn74hc595.pdf" H 5500 4950 50  0001 C CNN
-	1    5500 4950
-	1    0    0    -1  
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0101
-U 1 1 5CB823EE
-P 5500 3450
-F 0 "#PWR0101" H 5500 3200 50  0001 C CNN
-F 1 "GND" H 5505 3277 50  0000 C CNN
-F 2 "" H 5500 3450 50  0001 C CNN
-F 3 "" H 5500 3450 50  0001 C CNN
-	1    5500 3450
-	1    0    0    -1  
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0102
-U 1 1 5CB8BC43
-P 5900 5450
-F 0 "#PWR0102" H 5900 5200 50  0001 C CNN
-F 1 "GND" V 5905 5322 50  0000 R CNN
-F 2 "" H 5900 5450 50  0001 C CNN
-F 3 "" H 5900 5450 50  0001 C CNN
-	1    5900 5450
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0103
-U 1 1 5CB90901
-P 5900 5250
-F 0 "#PWR0103" H 5900 5000 50  0001 C CNN
-F 1 "GND" V 5905 5122 50  0000 R CNN
-F 2 "" H 5900 5250 50  0001 C CNN
-F 3 "" H 5900 5250 50  0001 C CNN
-	1    5900 5250
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0104
-U 1 1 5CB92E73
-P 5900 5150
-F 0 "#PWR0104" H 5900 4900 50  0001 C CNN
-F 1 "GND" V 5905 5022 50  0000 R CNN
-F 2 "" H 5900 5150 50  0001 C CNN
-F 3 "" H 5900 5150 50  0001 C CNN
-	1    5900 5150
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0105
-U 1 1 5CB9A445
-P 5800 4100
-F 0 "#PWR0105" H 5800 3850 50  0001 C CNN
-F 1 "GND" V 5805 3972 50  0000 R CNN
-F 2 "" H 5800 4100 50  0001 C CNN
-F 3 "" H 5800 4100 50  0001 C CNN
-	1    5800 4100
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0106
-U 1 1 5CB9F008
-P 5800 1900
-F 0 "#PWR0106" H 5800 1650 50  0001 C CNN
-F 1 "GND" V 5805 1772 50  0000 R CNN
-F 2 "" H 5800 1900 50  0001 C CNN
-F 3 "" H 5800 1900 50  0001 C CNN
-	1    5800 1900
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:C C2
-U 1 1 5CBA60B6
-P 5650 1900
-F 0 "C2" V 5902 1900 50  0000 C CNN
-F 1 ".1uF" V 5811 1900 50  0000 C CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 5688 1750 50  0001 C CNN
-F 3 "~" H 5650 1900 50  0001 C CNN
-	1    5650 1900
-	0    -1   -1   0   
-$EndComp
-Wire Wire Line
-	5500 1750 5500 1900
-Wire Wire Line
-	5500 3950 5500 4100
-Connection ~ 5500 1900
-Wire Wire Line
-	5500 1900 5500 2150
-$Comp
-L eeprom-programmer:C C3
-U 1 1 5CBAF261
-P 5650 4100
-F 0 "C3" V 5902 4100 50  0000 C CNN
-F 1 ".1uF" V 5811 4100 50  0000 C CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 5688 3950 50  0001 C CNN
-F 3 "~" H 5650 4100 50  0001 C CNN
-	1    5650 4100
-	0    -1   -1   0   
-$EndComp
-$Comp
-L eeprom-programmer:C C4
-U 1 1 5CB78612
-P 8000 2450
-F 0 "C4" V 8252 2450 50  0000 C CNN
-F 1 ".1uF" V 8161 2450 50  0000 C CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 8038 2300 50  0001 C CNN
-F 3 "~" H 8000 2450 50  0001 C CNN
-	1    8000 2450
-	0    1    1    0   
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0107
-U 1 1 5CB7C1B8
-P 8150 2450
-F 0 "#PWR0107" H 8150 2200 50  0001 C CNN
-F 1 "GND" V 8155 2322 50  0000 R CNN
-F 2 "" H 8150 2450 50  0001 C CNN
-F 3 "" H 8150 2450 50  0001 C CNN
-	1    8150 2450
-	0    -1   -1   0   
-$EndComp
 NoConn ~ 3300 2700
 NoConn ~ 3700 4300
 NoConn ~ 3700 4400
@@ -180,51 +41,10 @@ NoConn ~ 3700 3100
 NoConn ~ 3700 3200
 NoConn ~ 3100 2700
 NoConn ~ 3200 4700
-$Comp
-L eeprom-programmer:Arduino_Nano_v3.x A1
-U 1 1 5CB9F09B
-P 3200 3700
-F 0 "A1" H 3200 2611 50  0000 C CNN
-F 1 "Arduino_Nano_v3.x" H 3200 2520 50  0000 C CNN
-F 2 "Module:Arduino_Nano" H 3350 2750 50  0001 L CNN
-F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 3200 2700 50  0001 C CNN
-	1    3200 3700
-	1    0    0    -1  
-$EndComp
 NoConn ~ 3700 3500
 NoConn ~ 3700 4200
-Connection ~ 5500 4100
-Wire Wire Line
-	5500 4100 5500 4350
-Wire Wire Line
-	7850 2300 7850 2450
-Connection ~ 7850 2450
-Wire Wire Line
-	7850 2450 7850 2700
 Text GLabel 7850 2300 0    50   Input ~ 0
 Arduino5V
-$Comp
-L eeprom-programmer:GND #PWR0110
-U 1 1 5CB7A404
-P 7850 4600
-F 0 "#PWR0110" H 7850 4350 50  0001 C CNN
-F 1 "GND" H 7855 4427 50  0000 C CNN
-F 2 "" H 7850 4600 50  0001 C CNN
-F 3 "" H 7850 4600 50  0001 C CNN
-	1    7850 4600
-	1    0    0    -1  
-$EndComp
-$Comp
-L eeprom-programmer:GND #PWR0111
-U 1 1 5CB95418
-P 5900 5050
-F 0 "#PWR0111" H 5900 4800 50  0001 C CNN
-F 1 "GND" V 5905 4922 50  0000 R CNN
-F 2 "" H 5900 5050 50  0001 C CNN
-F 3 "" H 5900 5050 50  0001 C CNN
-	1    5900 5050
-	0    -1   -1   0   
-$EndComp
 Text Label 5900 2350 0    50   ~ 0
 addr00
 Text Label 5900 2450 0    50   ~ 0
@@ -331,8 +151,6 @@ Wire Wire Line
 	8400 4200 8700 4200
 Wire Wire Line
 	8400 3900 8700 3900
-NoConn ~ 7300 4250
-NoConn ~ 7300 4350
 Entry Bus Bus
 	6900 2900 7000 3000
 Entry Bus Bus
@@ -413,23 +231,6 @@ Text Label 2700 3900 2    50   ~ 0
 data6
 Text Label 2700 4000 2    50   ~ 0
 data7
-$Comp
-L eeprom-programmer:AT28C64B-15PU IC1
-U 1 1 5CB76AFF
-P 7300 3000
-F 0 "IC1" H 7850 3265 50  0000 C CNN
-F 1 "AT28C64B-15PU" H 7850 3174 50  0000 C CNN
-F 2 "Package_DIP:DIP-28_W15.24mm_Socket" H 8250 3100 50  0001 L CNN
-F 3 "https://componentsearchengine.com/Datasheets/1/AT28C64B-15PU.pdf" H 8250 3000 50  0001 L CNN
-F 4 "AT28C64B-15PU, Parallel EEPROM Memory 64kbit, Parallel, 150ns 4.5  5.5 V, 28-Pin PDIP" H 8250 2900 50  0001 L CNN "Description"
-F 5 "4.826" H 8250 2800 50  0001 L CNN "Height"
-F 6 "556-AT28C64B15PU" H 8250 2700 50  0001 L CNN "Mouser Part Number"
-F 7 "https://www.mouser.com/Search/Refine.aspx?Keyword=556-AT28C64B15PU" H 8250 2600 50  0001 L CNN "Mouser Price/Stock"
-F 8 "Microchip" H 8250 2500 50  0001 L CNN "Manufacturer_Name"
-F 9 "AT28C64B-15PU" H 8250 2400 50  0001 L CNN "Manufacturer_Part_Number"
-	1    7300 3000
-	1    0    0    -1  
-$EndComp
 Wire Wire Line
 	7300 3000 7000 3000
 Wire Wire Line
@@ -508,17 +309,6 @@ Text GLabel 7300 4050 0    50   Input ~ 0
 eeNotOutputEnable
 Wire Bus Line
 	2300 1550 6900 1550
-$Comp
-L eeprom-programmer:GND #PWR0112
-U 1 1 5CB89790
-P 5500 5650
-F 0 "#PWR0112" H 5500 5400 50  0001 C CNN
-F 1 "GND" H 5505 5477 50  0000 C CNN
-F 2 "" H 5500 5650 50  0001 C CNN
-F 3 "" H 5500 5650 50  0001 C CNN
-	1    5500 5650
-	1    0    0    -1  
-$EndComp
 Text GLabel 5100 2350 0    50   Input ~ 0
 srSerialData
 Text GLabel 3700 4100 2    50   Output ~ 0
@@ -549,11 +339,94 @@ Text GLabel 3700 3700 2    50   Output ~ 0
 srNotResetAll
 Wire Wire Line
 	3300 4700 3300 5100
+Wire Wire Line
+	5900 5050 6200 5050
+Text Label 5900 5050 0    50   ~ 0
+addr13
+Wire Wire Line
+	5900 5150 6200 5150
+Text Label 5900 5150 0    50   ~ 0
+addr14
+Entry Bus Bus
+	6200 5050 6300 5150
+Entry Bus Bus
+	6200 5150 6300 5250
+Connection ~ 6300 5050
+Wire Wire Line
+	7850 2300 7850 2700
+Wire Wire Line
+	3400 2300 3400 2700
 $Comp
-L eeprom-programmer:GND #PWR0108
-U 1 1 5CB8A3C0
+L eeprom-programmer:Arduino_Nano_v3.x A1
+U 1 1 5DEB64C7
+P 3200 3700
+F 0 "A1" H 3200 2611 50  0000 C CNN
+F 1 "Arduino_Nano_v3.x" H 3200 2520 50  0000 C CNN
+F 2 "Module:Arduino_Nano" H 3350 2750 50  0001 L CNN
+F 3 "http://www.mouser.com/pdfdocs/Gravitech_Arduino_Nano3_0.pdf" H 3200 2700 50  0001 C CNN
+	1    3200 3700
+	1    0    0    -1  
+$EndComp
+Wire Wire Line
+	5500 1750 5500 2150
+Wire Wire Line
+	5500 3950 5500 4350
+$Comp
+L eeprom-programmer:74LS595 U1
+U 1 1 5DEB723F
+P 5500 2750
+F 0 "U1" H 5500 3531 50  0000 C CNN
+F 1 "74LS595" H 5500 3440 50  0000 C CNN
+F 2 "" H 5500 2750 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74ls595" H 5500 2750 50  0001 C CNN
+	1    5500 2750
+	1    0    0    -1  
+$EndComp
+$Comp
+L eeprom-programmer:74LS595 U2
+U 1 1 5DEB7D2E
+P 5500 4950
+F 0 "U2" H 5500 5731 50  0000 C CNN
+F 1 "74LS595" H 5500 5640 50  0000 C CNN
+F 2 "" H 5500 4950 50  0001 C CNN
+F 3 "http://www.ti.com/lit/gpn/sn74ls595" H 5500 4950 50  0001 C CNN
+	1    5500 4950
+	1    0    0    -1  
+$EndComp
+Text Label 8700 4300 2    50   ~ 0
+addr13
+Wire Wire Line
+	8400 4300 8700 4300
+$Comp
+L eeprom-programmer:AT28C256-15PU IC1
+U 1 1 5DEBE083
+P 7300 3000
+F 0 "IC1" H 7850 3481 50  0000 C CNN
+F 1 "AT28C256-15PU" H 7850 3390 50  0000 C CNN
+F 2 "DIP1556W56P254L3702H483Q28N" H 6800 4300 50  0001 L CNN
+F 3 "https://componentsearchengine.com/Datasheets/1/AT28C64B-15PU.pdf" H 6800 4200 50  0001 L CNN
+F 4 "AT28C256-15PU, Parallel EEPROM Memory 256kbit, Parallel, 150ns 4.5  5.5 V, 28-Pin PDIP" H 6800 4100 50  0001 L CNN "Description"
+F 5 "4.826" H 6800 4000 50  0001 L CNN "Height"
+F 6 "556-AT28C25615PU" H 6800 3900 50  0001 L CNN "Mouser Part Number"
+F 7 "https://www.mouser.com/Search/Refine.aspx?Keyword=AT28C256" H 6800 3800 50  0001 L CNN "Mouser Price/Stock"
+F 8 "Microchip" H 6800 3700 50  0001 L CNN "Manufacturer_Name"
+F 9 "AT28C256-15PU" H 6800 3600 50  0001 L CNN "Manufacturer_Part_Number"
+	1    7300 3000
+	1    0    0    -1  
+$EndComp
+Text Label 8700 4400 2    50   ~ 0
+addr14
+Wire Wire Line
+	8400 4400 8700 4400
+Entry Bus Bus
+	8700 4300 8800 4400
+Entry Bus Bus
+	8700 4400 8800 4500
+$Comp
+L power:GND #PWR?
+U 1 1 5DEC1A08
 P 3300 5100
-F 0 "#PWR0108" H 3300 4850 50  0001 C CNN
+F 0 "#PWR?" H 3300 4850 50  0001 C CNN
 F 1 "GND" V 3305 4972 50  0000 R CNN
 F 2 "" H 3300 5100 50  0001 C CNN
 F 3 "" H 3300 5100 50  0001 C CNN
@@ -561,32 +434,62 @@ F 3 "" H 3300 5100 50  0001 C CNN
 	1    0    0    -1  
 $EndComp
 $Comp
-L power:GND #PWR0109
-U 1 1 5CBB9FE9
-P 3700 2500
-F 0 "#PWR0109" H 3700 2250 50  0001 C CNN
-F 1 "GND" V 3705 2372 50  0000 R CNN
-F 2 "" H 3700 2500 50  0001 C CNN
-F 3 "" H 3700 2500 50  0001 C CNN
-	1    3700 2500
-	0    -1   -1   0   
+L power:GND #PWR?
+U 1 1 5DEC3279
+P 5500 5650
+F 0 "#PWR?" H 5500 5400 50  0001 C CNN
+F 1 "GND" V 5505 5522 50  0000 R CNN
+F 2 "" H 5500 5650 50  0001 C CNN
+F 3 "" H 5500 5650 50  0001 C CNN
+	1    5500 5650
+	1    0    0    -1  
 $EndComp
-Connection ~ 3400 2500
-Wire Wire Line
-	3400 2300 3400 2500
 $Comp
-L eeprom-programmer:C C1
-U 1 1 5CB9E54E
-P 3550 2500
-F 0 "C1" V 3802 2500 50  0000 C CNN
-F 1 ".1uF" V 3711 2500 50  0000 C CNN
-F 2 "Capacitor_THT:C_Disc_D5.0mm_W2.5mm_P5.00mm" H 3588 2350 50  0001 C CNN
-F 3 "~" H 3550 2500 50  0001 C CNN
-	1    3550 2500
+L power:GND #PWR?
+U 1 1 5DEC4AEA
+P 5500 3450
+F 0 "#PWR?" H 5500 3200 50  0001 C CNN
+F 1 "GND" V 5505 3322 50  0000 R CNN
+F 2 "" H 5500 3450 50  0001 C CNN
+F 3 "" H 5500 3450 50  0001 C CNN
+	1    5500 3450
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DEC63E4
+P 7850 4700
+F 0 "#PWR?" H 7850 4450 50  0001 C CNN
+F 1 "GND" V 7855 4572 50  0000 R CNN
+F 2 "" H 7850 4700 50  0001 C CNN
+F 3 "" H 7850 4700 50  0001 C CNN
+	1    7850 4700
+	1    0    0    -1  
+$EndComp
+$Comp
+L power:GND #PWR?
+U 1 1 5DEC7D0B
+P 5900 5250
+F 0 "#PWR?" H 5900 5000 50  0001 C CNN
+F 1 "GND" V 5905 5122 50  0000 R CNN
+F 2 "" H 5900 5250 50  0001 C CNN
+F 3 "" H 5900 5250 50  0001 C CNN
+	1    5900 5250
 	0    -1   -1   0   
 $EndComp
-Wire Wire Line
-	3400 2500 3400 2700
+$Comp
+L power:GND #PWR?
+U 1 1 5DEC957C
+P 5900 5450
+F 0 "#PWR?" H 5900 5200 50  0001 C CNN
+F 1 "GND" V 5905 5322 50  0000 R CNN
+F 2 "" H 5900 5450 50  0001 C CNN
+F 3 "" H 5900 5450 50  0001 C CNN
+	1    5900 5450
+	0    -1   -1   0   
+$EndComp
+Wire Bus Line
+	6300 5050 6300 5250
 Wire Bus Line
 	2300 1550 2300 3900
 Wire Bus Line
