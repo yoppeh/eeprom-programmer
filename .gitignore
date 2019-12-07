@@ -1,5 +1,6 @@
 *cache*
 *-backup
 *.bak
+*.bck
 sym-lib-table
 mmap_*
