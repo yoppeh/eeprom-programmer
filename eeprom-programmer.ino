@@ -28,47 +28,47 @@
 
 
 /* These are used in the x-modem protocol */
-#define CHAR_SOH            0x01
-#define CHAR_EOT            0x04
-#define CHAR_ACK            0x06
-#define CHAR_NAK            0x15
-#define CHAR_ETB            0x17
-#define CHAR_CAN            0x18
-#define CHAR_C              0x43
+#define CHAR_SOH                0x01
+#define CHAR_EOT                0x04
+#define CHAR_ACK                0x06
+#define CHAR_NAK                0x15
+#define CHAR_ETB                0x17
+#define CHAR_CAN                0x18
+#define CHAR_C                  0x43
 
-#define XMODEM_RETRIES      10
-#define XMODEM_DELAY        2000
-#define XMODEM_PACKET_MAX   128
+#define XMODEM_RETRIES          10
+#define XMODEM_DELAY            2000
+#define XMODEM_PACKET_MAX       128
 
 /* Serial commands accepted by the programmer */
-#define CMD_ERASE           'e'
-#define CMD_FILL            'f'
-#define CMD_HELP            'h'
-#define CMD_LOCK            'l'
-#define CMD_READ            'r'
-#define CMD_SOFTWARE        's'
-#define CMD_UNLOCK          'u'
-#define CMD_XMODEM          'x'
+#define CMD_ERASE               'e'
+#define CMD_FILL                'f'
+#define CMD_HELP                'h'
+#define CMD_LOCK                'l'
+#define CMD_READ                'r'
+#define CMD_SOFTWARE            's'
+#define CMD_UNLOCK              'u'
+#define CMD_XMODEM              'x'
 
 /* Software version
  */
-#define VERSION_MAJ         1
-#define VERSION_MIN         0
-#define VERSION_BLD         0
+#define VERSION_MAJ             1
+#define VERSION_MIN             0
+#define VERSION_BLD             0
 
 /* Change this to match whatever baud rate you want to use for the serial 
  * connection. 
  */
-#define SERIAL_BAUD         57600
+#define SERIAL_BAUD             57600
 
 /* Set this to the size, in bytes of the EEPROM. In the case of the at28c64b,
  * it's 8k. 
  */
-#define EEPROM_SIZE         8192
-#define PAGE_SIZE           64
+#define EEPROM_SIZE             32768
+#define PAGE_SIZE               64
 
 /* Milliseconds to wait for a write to complete. */
-#define WRITE_DELAY         25
+#define WRITE_DELAY             25
 
 
 /* Pin assignments
@@ -594,30 +594,13 @@ void setup()
  */
 void abort_xmodem(char *s)
 {
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
-    Serial.write(CHAR_CAN);
-    Serial.flush();
-    delay(1000);
+    int i;
+
+    for (i = 0; i < 8; i++) {
+        Serial.write(CHAR_CAN);
+        Serial.flush();
+        delay(1000);
+    }
     Serial.print("transfer aborted: ");
     Serial.println(s);
     while (Serial.available()) {
@@ -728,25 +711,23 @@ void cmd_xmodem(void)
     byte error_count = 0;
     static byte packet[XMODEM_PACKET_MAX];
     
-    Serial.println("starting xmodem");
-    Serial.println("start transfer now...");
+    Serial.println("Starting xmodem");
+    Serial.println("Start transfer now or press 'z' to abort");
+    Serial.println((char *)packet);
 
-    retry = XMODEM_RETRIES;
-    while (retry--) {
+    while (1) {
         Serial.write(CHAR_NAK);
         Serial.flush();
         if (Serial.available()) {
             ch = Serial.read();
             if (ch == CHAR_SOH) {
                 break;
+            } else if (tolower(ch) == 'z') {
+                Serial.println("Aborted by user");
+                return;
             }
         }
         delay(XMODEM_DELAY);
-    }
-
-    if (!retry) {
-        abort_xmodem("timed out");
-        return;
     }
     
     while (1) {
