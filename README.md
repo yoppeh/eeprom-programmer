@@ -3,7 +3,7 @@ An Arduino Nano sketch and schematic for an Atmel 28cx programmer. I specificall
 for the extra/fewer address lines, of course.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
-- e - erase the program
+- e - erase the eeprom
 - f - fill eeprom with incrementing bytes
 - h - help (this) text
 - l - lock the eeprom against writes
@@ -18,7 +18,7 @@ Any standard terminal program can be used to talk to the programmer. I use the f
 - [minicom](https://linux.die.net/man/1/minicom) for Linux
 
 The programmer uses standard x-modem, as provided by any respectable terminal program—and certainly all of the
-above listed terminal programs, to put binary files onto the eeprom. No other software is required. The programmer
+above listed terminal programs—to put binary files onto the eeprom. No other software is required. The programmer
 will verify every 64 bytes as they are written (the size of an internal eeprom page).
 
 Although the eeprom chips are supposed to come from the factory unlocked, I've heard stories of some chips being
