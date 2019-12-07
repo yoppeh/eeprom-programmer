@@ -46,14 +46,15 @@
 #define CMD_HELP                'h'
 #define CMD_LOCK                'l'
 #define CMD_READ                'r'
-#define CMD_SOFTWARE            's'
+#define CMD_SIZE                's'
 #define CMD_UNLOCK              'u'
+#define CMD_VERSION             'v'
 #define CMD_XMODEM              'x'
 
 /* Software version
  */
 #define VERSION_MAJ             1
-#define VERSION_MIN             0
+#define VERSION_MIN             2
 #define VERSION_BLD             0
 
 /* Change this to match whatever baud rate you want to use for the serial 
@@ -64,7 +65,7 @@
 /* Set this to the size, in bytes of the EEPROM. In the case of the at28c64b,
  * it's 8k. 
  */
-#define EEPROM_SIZE             32768
+#define DEFAULT_EEPROM_SIZE     8192
 #define PAGE_SIZE               64
 
 /* Milliseconds to wait for a write to complete. */
@@ -112,6 +113,8 @@ const int eeD4 = 6;
 const int eeD5 = 7;
 const int eeD6 = 8;
 const int eeD7 = 9;
+
+unsigned int eeprom_size = DEFAULT_EEPROM_SIZE;
 
 
 /* Clear the outputs of all shift registers to 0 by toggling the /srclr line.
@@ -436,7 +439,7 @@ int erase_eeprom(void)
         0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
     };
     word i;
-    for (i = 0; i < EEPROM_SIZE; i += PAGE_SIZE) {
+    for (i = 0; i < eeprom_size; i += PAGE_SIZE) {
         if (i % 1024 == 0) {
             Serial.print(".");
         }
@@ -481,7 +484,7 @@ int write_pattern(void)
 {
     byte fill[PAGE_SIZE];
     word i, j;
-    for (i = 0; i < EEPROM_SIZE; i += PAGE_SIZE) {
+    for (i = 0; i < eeprom_size; i += PAGE_SIZE) {
         for (j = 0; j < PAGE_SIZE; j++) {
             fill[j] = i + j;
         }
@@ -507,7 +510,7 @@ void read_eeprom(void)
     char s[6];
     word i, j;
     byte d;
-    for (i = 0; i < EEPROM_SIZE; i += 16) {
+    for (i = 0; i < eeprom_size; i += 16) {
         sprintf(s, "%04x ", i);
         Serial.print(s);
         for (j = 0; j < 16; j++) {
@@ -543,7 +546,8 @@ void cmd_help(void)
     Serial.print(CMD_HELP); Serial.println(" - help (this) text");
     Serial.print(CMD_LOCK); Serial.println(" - lock the eeprom against writes");
     Serial.print(CMD_READ); Serial.println(" - read and dump eeprom contents");
-    Serial.print(CMD_SOFTWARE); Serial.println(" - print software info");
+    Serial.print(CMD_SIZE); Serial.print(" - set the size of the eeprom (currently "); Serial.print(eeprom_size / 1024); Serial.println("k x 8)");
+    Serial.print(CMD_VERSION); Serial.println(" - print software version info");
     Serial.print(CMD_UNLOCK); Serial.println(" - unlock eeprom writes");
     Serial.print(CMD_XMODEM); Serial.println(" - xmodem transfer binary file to eeprom");
 }
@@ -669,12 +673,44 @@ void cmd_read(void)
 }
 
 
+/* Display size command help 
+*/
+void cmd_size_help(void)
+{
+    Serial.println("select new eeprom size:");
+    Serial.println("1 - 8k x 8");
+    Serial.println("2 - 32k x 8");
+    Serial.println("any other key to cancel");
+}
+
+
+/* Set the EEPROM size.
+ */
+ void cmd_size(void)
+ {
+    int ch;
+    cmd_size_help();
+    show_prompt();
+    ch = read_serial();
+    if (ch == '1') {
+        eeprom_size = 8192;
+    } else if (ch == '2') {
+        eeprom_size = 32768;
+    } else {
+        Serial.println("");
+        return;
+    }
+    Serial.print("eeprom size set to "); Serial.print(eeprom_size / 1024); Serial.println("k x 8");
+
+ }
+
+ 
 /* Print software info.
  */
-void cmd_software(void)
+void cmd_version(void)
 {
     char version[12];
-    Serial.println("software info:");
+    Serial.println("software version info:");
     sprintf(version, "%02i\.%02i.%02i", VERSION_MAJ, VERSION_MIN, VERSION_BLD);
     Serial.print("version: ");
     Serial.println(version);
@@ -745,7 +781,7 @@ void cmd_xmodem(void)
         }
         remote_chk = read_serial();
         // make sure data < EEPROM size
-        if (addr == EEPROM_SIZE) {
+        if (addr == eeprom_size) {
             abort_xmodem("image is too large for eeprom");
             return;
         }
@@ -850,11 +886,14 @@ void process_cmd(char cmd)
         case CMD_READ:
             cmd_read();
             break;
-        case CMD_SOFTWARE:
-            cmd_software();
+        case CMD_SIZE:
+            cmd_size();
             break;
         case CMD_UNLOCK:
             cmd_unlock();
+            break;
+        case CMD_VERSION:
+            cmd_version();
             break;
         case CMD_XMODEM:
             cmd_xmodem();
