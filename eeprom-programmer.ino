@@ -34,6 +34,7 @@
 #define CHAR_NAK                0x15
 #define CHAR_ETB                0x17
 #define CHAR_CAN                0x18
+#define CHAR_ESC                0x1b
 #define CHAR_C                  0x43
 
 #define XMODEM_RETRIES          10
@@ -65,7 +66,7 @@
 /* Set this to the size, in bytes of the EEPROM. In the case of the at28c64b,
  * it's 8k. 
  */
-#define DEFAULT_EEPROM_SIZE     8192
+#define DEFAULT_EEPROM_SIZE     32768
 #define PAGE_SIZE               64
 
 /* Milliseconds to wait for a write to complete. */
@@ -594,6 +595,16 @@ void setup()
 }
 
 
+/* Flush the serial input buffer
+ */
+void flush_serial_input(void)
+{
+    while (Serial.available()) {
+        Serial.read();
+    }
+}
+
+
 /* Sends the xmodem abort sequence out the serial port.
  */
 void abort_xmodem(char *s)
@@ -607,9 +618,7 @@ void abort_xmodem(char *s)
     }
     Serial.print("transfer aborted: ");
     Serial.println(s);
-    while (Serial.available()) {
-        Serial.read();
-    }
+    flush_serial_input();
 }
 
 
@@ -730,10 +739,39 @@ void cmd_unlock(void)
 }
 
 
+/* Read the next available byte from the serial port.
+ */
+int xmodem_read_serial(void)
+{
+    unsigned long start = millis();
+    while (!Serial.available()) {
+        if (millis() - start >= XMODEM_DELAY) {
+            return -1;
+        }
+    }
+    return Serial.read();
+}
+
+
+/* Print packet data
+ */
+ void print_packet_data(byte *packet) {
+    char s[3];
+    for (int i = 1; i <= XMODEM_PACKET_MAX; i++) {
+        sprintf(s, "%02x ", packet[i - 1]);
+        Serial.print(s);
+        if (i % 16 == 0) {
+            Serial.println("");
+        }
+    }
+ }
+
+
 /* Begin xmodem transfer to the EEPROM.
  */
 void cmd_xmodem(void)
 {
+    unsigned long int start;
     word addr = 0;
     int retry;
     int ch;
@@ -744,51 +782,117 @@ void cmd_xmodem(void)
     byte remote_not_pkt_num;
     byte remote_chk;
     byte chk;
+    byte response_char = CHAR_NAK;
     byte error_count = 0;
     static byte packet[XMODEM_PACKET_MAX];
+    char s[12];
+    char *last_error;
     
     Serial.println("Starting xmodem");
-    Serial.println("Start transfer now or press 'z' to abort");
-    Serial.println((char *)packet);
-
-    while (1) {
-        Serial.write(CHAR_NAK);
-        Serial.flush();
-        if (Serial.available()) {
-            ch = Serial.read();
-            if (ch == CHAR_SOH) {
-                break;
-            } else if (tolower(ch) == 'z') {
-                Serial.println("Aborted by user");
-                return;
-            }
-        }
-        delay(XMODEM_DELAY);
-    }
+    Serial.println("Start transfer now or press 'ESC' key to abort");
     
     while (1) {
+        // packet start
+        retry = XMODEM_RETRIES;
+        while (retry--) {
+            if (response_char) {
+                Serial.write(response_char);
+                Serial.flush();
+                ch = xmodem_read_serial();
+                switch (ch) {
+                    case CHAR_SOH:
+                        goto begin;
+                    case CHAR_ESC:
+                        Serial.println("Aborted by user");
+                        return;
+                    case CHAR_CAN:
+                        ch = xmodem_read_serial();
+                        if (ch == CHAR_CAN) {
+                            flush_serial_input();
+                        }
+                        Serial.write(CHAR_ACK);
+                        Serial.flush();
+                        Serial.println("Remote cancelled transfer");
+                        return;
+                    case CHAR_EOT:
+                        Serial.write(CHAR_NAK);
+                        Serial.flush();
+                        delay(1000);
+                        ch = xmodem_read_serial();
+                        if (ch == CHAR_EOT) {
+                            Serial.write(CHAR_ACK);
+                            Serial.flush();
+                            delay(1000);
+                            flush_serial_input();
+                            Serial.println("transfer complete");
+                            return;
+                        }
+                        ch = 0;
+                        break;
+                }
+            }
+        }
+begin:
+        if (ch != CHAR_SOH) {
+            response_char = CHAR_NAK;
+            flush_serial_input();
+            continue;
+        }
+        response_char = 0;
         // packet number
-        remote_pkt_num = read_serial();
+        ch = xmodem_read_serial();
+        if (ch == -1) {
+            last_error = "timeout waiting for remote_pkt_num";
+            error_count++;
+            goto skip;
+        }
+        remote_pkt_num = ch;
         // complement packet number
-        remote_not_pkt_num = read_serial();
+        ch = xmodem_read_serial();
+        if (ch == -1) {
+            last_error = "timeout waiting for remote_not_pkt_num";
+            error_count++;
+            goto skip;
+        }
+        remote_not_pkt_num = ch;
         // packet
         pkt_len = 0;
         chk = 0;
         while (pkt_len < XMODEM_PACKET_MAX) {
-            ch = read_serial();
+            start = millis();
+            while (!Serial.available()) {
+                if (millis() - start >= XMODEM_DELAY) {
+                    last_error = "timeout waiting for packet data";
+                    error_count++;
+                    goto skip;
+                }
+            }
+            ch = Serial.read();
+            if (ch == -1) {
+                last_error = "timeout reading packet data";
+                error_count++;
+                goto skip;
+            }
             packet[pkt_len++] = ch;
             chk += (byte)ch;
         }
-        remote_chk = read_serial();
+        ch = xmodem_read_serial();
+        if (ch == -1) {
+            last_error = "timeout waiting for checksum";
+            error_count++;
+            goto skip;
+        }
+        remote_chk = ch;
         // make sure data < EEPROM size
         if (addr == eeprom_size) {
             abort_xmodem("image is too large for eeprom");
             return;
         }
         // check complement error
-        if (remote_not_pkt_num + remote_pkt_num != 255) {
+        if (remote_not_pkt_num + pkt_num != 255) {
             Serial.write(CHAR_NAK);
             Serial.flush();
+            last_error = "check complement error";
             error_count++;
             goto skip;
         }
@@ -796,57 +900,49 @@ void cmd_xmodem(void)
         if (remote_pkt_num == prev_pkt_num) {
             Serial.write(CHAR_ACK);
             Serial.flush();
+            last_error = "check duplicate packet";
             error_count = 0;
             goto skip;
         // check out of sequence
         } else if (remote_pkt_num != pkt_num) {
-            abort_xmodem("out of sequence");
-            return;
+            last_error = "out of sequence";
+            goto skip;
         }
         // checksum test
         if (remote_chk != chk) {
             Serial.write(CHAR_NAK);
             Serial.flush();
+            last_error = "checksum error";
             error_count++;
             goto skip;
-        }
+        } 
         // no errors, send an ACK and write the pages to the EEPROM 
+        Serial.write(CHAR_ACK);
+        Serial.flush();
         write_packet(addr, packet, XMODEM_PACKET_MAX);
         if (!verify_packet(addr, packet, XMODEM_PACKET_MAX)) {
             abort_xmodem("verify failed writing packet, aborting");
+            print_packet_data(packet);
             return;
         }
         addr += XMODEM_PACKET_MAX;
         prev_pkt_num = pkt_num;
         pkt_num = remote_pkt_num + 1;
         error_count = 0;
-        Serial.write(CHAR_ACK);
-        Serial.flush();
-skip:   if (error_count == XMODEM_RETRIES) {
-            abort_xmodem("too many xmodem errors, aborting");
+skip:   
+        if (error_count == XMODEM_RETRIES) {
+            abort_xmodem(last_error);
+            Serial.print("prev_pkt_num = "); Serial.println(prev_pkt_num);
+            Serial.print("pkt_num = "); Serial.println(pkt_num);
+            sprintf(s, " (%02x)", remote_pkt_num);
+            Serial.print("remote_pkt_num = "); Serial.print(remote_pkt_num); Serial.println(s);
+            sprintf(s, " (%02x)", remote_not_pkt_num);
+            Serial.print("remote_not_pkt_num = "); Serial.print(remote_not_pkt_num); Serial.println(s);
+            sprintf(s, " (%02x)", remote_chk);
+            Serial.print("remote_chk = "); Serial.print(remote_chk); Serial.println(s);
+            Serial.print("chk = "); Serial.println(chk);
+            print_packet_data(packet);
             return;
-        }
-        // SOH
-        while (1) {
-            ch = read_serial();
-            if (ch == CHAR_EOT) {
-                Serial.write(CHAR_NAK);
-                Serial.flush();
-                delay(1000);
-                ch = read_serial();
-                if (ch == CHAR_EOT) {
-                    Serial.write(CHAR_ACK);
-                    Serial.flush();
-                    delay(1000);
-                    while (Serial.available()) {
-                        Serial.read();
-                    }
-                    Serial.println("transfer complete");
-                    return;
-                }
-            } else if (ch == CHAR_SOH) {
-                break;
-            }
         }
     }
 }
