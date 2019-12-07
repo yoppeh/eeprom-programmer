@@ -26,7 +26,7 @@ purchased off ebay that arrive locked. Try doing an unlock on a chip if you have
 
 When doing an xmodem transfer to the chip, the program will wait indefinitely for you to start the xmodem transfer from your terminal software. You can abort the transfer at this point by pressing the ESC key. Otherwise, once you have started the transfer, it will continue until the process completes or an error is detected.
 
-The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M).
+The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M). **WARNING: The PCB currently in the repo only has traces for an 8Kx8 ROM. If you want to get a PCB made, you'll need to update the PCB yourself!**
 
 Here is a fresh board, built up after receipt from Osh Park.
 ![eeprom-programmer board](populated-board.jpg)
