@@ -547,7 +547,15 @@ void cmd_help(void)
     Serial.print(CMD_HELP); Serial.println(" - help (this) text");
     Serial.print(CMD_LOCK); Serial.println(" - lock the eeprom against writes");
     Serial.print(CMD_READ); Serial.println(" - read and dump eeprom contents");
-    Serial.print(CMD_SIZE); Serial.print(" - set the size of the eeprom (currently "); Serial.print(eeprom_size / 1024); Serial.println("k x 8)");
+    Serial.print(CMD_SIZE); Serial.print(" - set the size of the eeprom (currently "); Serial.print(eeprom_size / 1024); Serial.print("k x 8, ");
+    if (eeprom_size == 8192) {
+        Serial.print("AT28C64");
+    } else if (eeprom_size == 32768) {
+        Serial.print("AT28C256");
+    } else {
+        Serial.print("Unknown chip");
+    }
+    Serial.println(")");
     Serial.print(CMD_VERSION); Serial.println(" - print software version info");
     Serial.print(CMD_UNLOCK); Serial.println(" - unlock eeprom writes");
     Serial.print(CMD_XMODEM); Serial.println(" - xmodem transfer binary file to eeprom");
@@ -687,8 +695,8 @@ void cmd_read(void)
 void cmd_size_help(void)
 {
     Serial.println("select new eeprom size:");
-    Serial.println("1 - 8k x 8");
-    Serial.println("2 - 32k x 8");
+    Serial.println("1 - 8k x 8 (AT28C64)");
+    Serial.println("2 - 32k x 8 (AT28C256)");
     Serial.println("any other key to cancel");
 }
 
@@ -709,8 +717,15 @@ void cmd_size_help(void)
         Serial.println("");
         return;
     }
-    Serial.print("eeprom size set to "); Serial.print(eeprom_size / 1024); Serial.println("k x 8");
-
+    Serial.print("eeprom size set to "); Serial.print(eeprom_size / 1024); Serial.print("k x 8 (");
+    if (eeprom_size == 8192) {
+        Serial.print("AT28C64");
+    } else if (eeprom_size = 32768) {
+        Serial.print("AT28C256");
+    }
+    Serial.println(")");
+    Serial.println("");
+    cmd_help();
  }
 
  
