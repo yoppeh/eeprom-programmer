@@ -1018,7 +1018,6 @@ void process_cmd(char cmd)
 
 /* Process commands from the serial port, output results.
  */
- 
 void loop() 
 {
     process_cmd(read_serial());
