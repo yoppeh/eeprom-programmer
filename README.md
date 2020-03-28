@@ -1,5 +1,5 @@
 # eeprom-programmer
-An Arduino Nano sketch and schematic for an Atmel 28cx programmer. I specifically designed this for an 8kx8 eeprom (AT28C64B-15PU) and have tested it on a 32kx8 (AT28C256-15PU).  The schematic has been updated to connect all address lines for the 28cx series, so any of those eeproms should work up to the 32kx8 chips.
+An Arduino Nano sketch and schematic for an Atmel 28cx programmer. The schematic started out only targeting 8kx8 chips but has been updated to connect all address lines for the 28cx series, so any of those eeproms should work up to the 32kx8 chips.
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
 - e - erase the eeprom
