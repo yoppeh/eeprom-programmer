@@ -17,6 +17,8 @@ Any standard terminal program can be used to talk to the programmer. I use the f
 - [teraterm](https://ttssh2.osdn.jp/index.html.en) for Windows
 - [minicom](https://linux.die.net/man/1/minicom) for Linux
 
+Be sure to se the size of your target eeprom with the s command before doing anything. It doesn't affect the chip in any way, but tells the programmer what size your chip is for the erase, fill and read commands and error checking in the xmodem transfer.
+
 The programmer uses standard x-modem, as provided by any respectable terminal program—and certainly all of the
 above listed terminal programs—to put binary files onto the eeprom. No other software is required. The programmer
 will verify every 64 bytes as they are written (the size of an internal eeprom page).
