@@ -720,7 +720,7 @@ void cmd_size_help(void)
     Serial.print("eeprom size set to "); Serial.print(eeprom_size / 1024); Serial.print("k x 8 (");
     if (eeprom_size == 8192) {
         Serial.print("AT28C64");
-    } else if (eeprom_size = 32768) {
+    } else if (eeprom_size == 32768) {
         Serial.print("AT28C256");
     }
     Serial.println(")");
