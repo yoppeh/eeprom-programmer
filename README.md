@@ -1,5 +1,5 @@
 # eeprom-programmer
-An Arduino Nano sketch and schematic for an Atmel 28cx programmer. The schematic started out only targeting 8kx8 chips (rev. A) but has been updated to connect all address lines for the 28cx series (rev. B), so any of those eeproms should work up to the 32kx8 chips.
+An Arduino Nano sketch and schematic for an Atmel 28cx programmer. The schematic started out only targeting 8kx8 chips (rev. A) but has been updated to connect all address lines for the 28cx series (rev. B), so any of those eeproms should work up to the 32kx8 chips. The design is based on this one, from [Ben Eater](https://youtu.be/K88pgWhEb1M). 
 
 The Arduino Nano sketch implements a serial interface to the programmer. It accepts one-letter commands:
 - e - erase the eeprom
@@ -28,7 +28,5 @@ purchased off ebay that arrive locked. Try doing an unlock on a chip if you have
 
 When doing an xmodem transfer to the chip, the program will wait indefinitely for you to start the xmodem transfer from your terminal software. You can abort the transfer at this point by pressing the ESC key. Otherwise, once you have started the transfer, it will continue until the process completes or an error is detected.
 
-The circuit comes from [Ben Eater](https://youtu.be/K88pgWhEb1M). 
-
-Here is a fresh board, built up after receipt from Osh Park.
+Here is a fresh board (Rev. A), built up after receiving from Osh Park.
 ![eeprom-programmer board](populated-board.jpg)
