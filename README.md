@@ -28,5 +28,4 @@ purchased off ebay that arrive locked. Try doing an unlock on a chip if you have
 
 When doing an xmodem transfer to the chip, the program will wait indefinitely for you to start the xmodem transfer from your terminal software. You can abort the transfer at this point by pressing the ESC key. Otherwise, once you have started the transfer, it will continue until the process completes or an error is detected.
 
-Here is a fresh board (Rev. A), built up after receiving from Osh Park. The circuit is easy to breadboard too.
-![eeprom-programmer board](populated-board.jpg)
+If you want to fill the eeprom with a specific byte, say the 6502 nop 0xea, just change the "fill[j] = i + j;" on line 490 to "fill[j] = 0xea;".
